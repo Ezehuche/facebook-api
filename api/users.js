@@ -16,7 +16,7 @@ module.exports = function (router) {
         if (req.body.password) {
             let password = require("bcryptjs").hashSync(req.body.password, 10);
             let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-            let metaArr = [];
+            
             if (!req.body.email.match(mailFormat)) {
                 res.status(400).json({ error: 'Invalid email format' });
             } else {

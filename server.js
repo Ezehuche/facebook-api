@@ -9,6 +9,8 @@ const knex = require("./config/db");
 var logger = require('morgan');
 var path = require('path');
 const helmet = require('helmet');
+var swaggerJSDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
 
 require('dotenv').config();
 
@@ -16,6 +18,33 @@ const app = express();
 app.use(helmet({
   frameguard: false
 }));
+
+// swagger definition
+var swaggerDefinition = {
+  info: {
+      title: 'Facebook API',
+      version: '1.0.0',
+      description: 'Rest API documentation for Facebook',
+  },
+  host: 'localhost:5000',
+  basePath: '/api/v1/',
+};
+
+// options for the swagger docs
+var options = {
+  // import swaggerDefinitions
+  swaggerDefinition: swaggerDefinition,
+  // path to the API docs
+  apis: ["./api/*"],
+};
+
+// initialize swagger-jsdoc
+var swaggerSpec = swaggerJSDoc(options);
+swaggerSpec.paths = require('./api-docs/api-paths.json');
+swaggerSpec.definitions = require('./api-docs/api-definitions.json');
+swaggerSpec.securityDefinitions = require('./api-docs/api-security-definitions.json');
+// serve swagger
+app.use('/swagger.json', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(logger('dev'));
 

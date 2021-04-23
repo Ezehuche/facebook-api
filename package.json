@@ -45,6 +45,7 @@
         "semver": "^7.3.4",
         "semver-sort": "0.0.4",
         "server-destroy": "^1.0.1",
+        "swagger-jsdoc": "^6.0.0",
         "swagger-ui-express": "^4.0.7",
         "validator": "^13.1.17",
         "yenv": "^2.1.0"

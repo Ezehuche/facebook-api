@@ -1,0 +1,226 @@
+{
+    "/users/register": {
+        "post": {
+            "summary": "Registers a new User",
+            "tags": [
+                "users"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "operationId": "post_users_register",
+            "security": [
+                {
+                    "internalApiKey": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "user",
+                    "in": "body",
+                    "description": "user to create",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/users"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "An array of Users",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/users"
+                        }
+                    }
+                },
+                "default": {
+                    "description": "Unexpected error",
+                    "schema": {
+                        "$ref": "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
+    "/posts/create": {
+        "post": {
+            "summary": "Create & Publish a new Post",
+            "tags": [
+                "posts"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "operationId": "publish_new_post",
+            "security": [
+                {
+                    "internalApiKey": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "post",
+                    "in": "body",
+                    "description": "create & publish new post",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/posts"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "An array of Posts",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/posts"
+                        }
+                    }
+                },
+                "default": {
+                    "description": "Unexpected error",
+                    "schema": {
+                        "$ref": "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
+    "/posts/{id}": {
+        "get": {
+            "summary": "Gets post",
+            "tags": [
+                "posts"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "operationId": "get_posts_id",
+            "security": [
+                {
+                    "internalApiKey": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "post id",
+                    "required": true,
+                    "type": "number",
+                    "format": "double"
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "A post",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/posts"
+                        }
+                    }
+                },
+                "default": {
+                    "description": "Unexpected error",
+                    "schema": {
+                        "$ref": "#/definitions/Error"
+                    }
+                }
+            }
+        },
+        "put": {
+            "summary": "Updates a post",
+            "tags": [
+                "posts"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "operationId": "put_posts_id",
+            "security": [
+                {
+                    "internalApiKey": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "post id",
+                    "required": true,
+                    "type": "number",
+                    "format": "double"
+                },
+                {
+                    "name": "posts",
+                    "in": "body",
+                    "description": "posts to create",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/posts"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "An array of posts",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/posts"
+                        }
+                    }
+                },
+                "default": {
+                    "description": "Unexpected error",
+                    "schema": {
+                        "$ref": "#/definitions/Error"
+                    }
+                }
+            }
+        },
+        "delete": {
+            "summary": "Deletes a post",
+            "tags": [
+                "posts"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "operationId": "delete_posts_id",
+            "security": [
+                {
+                    "internalApiKey": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "description": "post id",
+                    "required": true,
+                    "type": "number",
+                    "format": "double"
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "A posts",
+                    "schema": {
+                        "$ref": "#/definitions/posts"
+                    }
+                },
+                "default": {
+                    "description": "Unexpected error",
+                    "schema": {
+                        "$ref": "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    }
+}
