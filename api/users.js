@@ -2,6 +2,7 @@ let User = require('../models/user');
 let async = require("async");
 let jwt = require('jsonwebtoken');
 let bcrypt = require("bcryptjs");
+let notification = require('../config/notification');
 
 
 module.exports = function (router) {
@@ -26,6 +27,7 @@ module.exports = function (router) {
                         res.status(403).json({ error: err });
                     } else {
                         res.status(200).json(result);
+                        await notification(result.data);
                     }
                 });
             }
