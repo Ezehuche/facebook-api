@@ -1,4 +1,4 @@
-let User = require('./base/entity')("users", references);
+let User = require('./base/entity')("users");
 
 
 /**

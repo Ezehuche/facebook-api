@@ -1,10 +1,12 @@
 let User = require('../models/user');
 let async = require("async");
+let jwt = require('jsonwebtoken');
+let bcrypt = require("bcryptjs");
 
 
-module.exports = function (router, passport) {
+module.exports = function (router) {
 
-    router.post('/user/register', function (req, res, next) {
+    router.post('/users/register', function (req, res, next) {
         User.findAll("email", req.body.email, (user) => {
             if (user && user.length > 0) {
                 return res.status(400).json({ error: "This user alraedy exist" });
@@ -30,4 +32,23 @@ module.exports = function (router, passport) {
         }
     });
 
+    router.post('/users/login', async function (req, res) {
+        let results = (await User.find({ 'email': req.body.email }))[0];
+
+        // Check if user exists
+        if (!results.data) {
+            res.status(401).json({ error: "Email not found" });
+        }
+        bcrypt.compare(req.body.password, results.data.password).then(isMatch => {
+            if (isMatch) {
+                res.cookie("uid", results.data.id);
+                let token = jwt.sign({ uid: results.data.id }, process.env.SECRET_KEY, { expiresIn: '3h' });
+                res.status(200).json({ token: token });
+            } else {
+                res.status(401).json({ error: "Password incorrect" });
+            }
+        })
+    });
+
+    return router;
 }
