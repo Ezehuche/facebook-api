@@ -4,6 +4,7 @@ let File = require("../models/file");
 let mkdirp = require("mkdirp");
 let path = require("path");
 let validate = require("../middleware/validate");
+let PostLike = require("../models/post-like");
 
 let systemFilePath = "uploads/uploaded-images";
 
@@ -81,4 +82,30 @@ module.exports = function (router) {
             }
         })
     });
+
+    router.post("/posts/like/:id(\\d+)", function (req, res, next) {
+        let post_id = req.params.id;
+        let newPostLike = new PostLike({'post_id': post_id});
+        newPostLike.createPost(function (err, result) {
+            if (err) {
+                return res.status(403).json({error: err});
+            } else {
+                res.json({message: 'post Likes'});
+            }
+        })
+    });
+
+    router.post("/posts/undolike/:id(\\d+)", function (req, res, next) {
+        let post_id = req.params.id;
+        let postLike = new PostLike({'post_id': post_id});
+        postLike.undoLike(function (err, result) {
+            if (err) {
+                return res.status(403).json({error: err});
+            } else {
+                res.json({message: 'post unliked'});
+            }
+        })
+    });
+
+    return router;
 }

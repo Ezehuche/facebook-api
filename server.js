@@ -84,6 +84,7 @@ app.use("/api/v1", api);
 
 require('./api/users')(api);
 require('./api/posts');
+require('./api/comments');
 
 //force all requests to api route to look for token, if token is present in header the user will be logged in with that token
 api.use(function (req, res, next) {
