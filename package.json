@@ -14,6 +14,13 @@
     },
     "author": "Ezeh Uche <ezehuche3@gmail.com>",
     "license": "MIT",
+    "jest": {
+        "testEnvironment": "node",
+        "globalSetup": "./tests/global-setup.js",
+        "moduleFileExtensions": [
+            "js"
+        ]
+    },
     "dependencies": {
         "async": "^3.2.0",
         "bcrypt": "^5.0.0",

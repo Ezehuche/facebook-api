@@ -24,7 +24,7 @@ module.exports = function (router) {
                 newUser.set('password', password);
                 newUser.createUser(async function (err, result) {
                     if (err) {
-                        res.status(403).json({ error: err });
+                        res.status(404).json({ message: 'issue registering user' });
                     } else {
                         res.status(200).json(result);
                         await notification(result.data);
@@ -47,7 +47,7 @@ module.exports = function (router) {
                 let token = jwt.sign({ uid: results.data.id }, process.env.SECRET_KEY, { expiresIn: '3h' });
                 res.status(200).json({ token: token });
             } else {
-                res.status(401).json({ error: "Password incorrect" });
+                res.status(404).json({ error: "Password incorrect" });
             }
         })
     });

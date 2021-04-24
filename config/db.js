@@ -1,15 +1,11 @@
-var config = {
-    host: 'localhost',
-    user: 'uche',
-    database: 'facebk',
-    password: 'uche',
-    port: 5433
-};
+const knex = require("knex")
+const config = require("../knexfile")
 
-var knex = require('knex')({
-    client: 'pg',
-    connection: config,
-    pool: { min: 0, max: 10 }
-});
+let db = null
+if (process.env.NODE_ENV === "test") {
+  db = knex(config.test)
+} else {
+  db = knex(config.development)
+}
 
-module.exports = knex;
+module.exports = db

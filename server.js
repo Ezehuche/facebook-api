@@ -12,7 +12,7 @@ const helmet = require('helmet');
 var swaggerJSDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 
-require('dotenv').config();
+require('dotenv').config({path: __dirname + '/.env'})
 
 const app = express();
 app.use(helmet({
@@ -144,3 +144,5 @@ app.use(function (err, req, res, next) {
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => console.log(`Server up and running on port ${port} !`));
+
+module.exports = app

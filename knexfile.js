@@ -1,12 +1,31 @@
 // Update with your config settings.
+let path = require('path');
+require('dotenv').config({path: __dirname + '/.env'})
 
 module.exports = {
 
   development: {
     client: 'postgresql',
     connection: {
-      database: 'facebk',
-      user:     'uche',
+      database: process.env.POSTGRES_DB_NAME,
+      user:     process.env.POSTGRES_DB_USER,
+      password: process.env.POSTGRES_DB_PASSWORD,
+      port: process.env.POSTGRES_DB_PORT
+    },
+    pool: {
+      min: 2,
+      max: 10
+    },
+    migrations: {
+      tableName: 'knex_migrations'
+    }
+  },
+
+  test: {
+    client: 'postgresql',
+    connection: {
+      database: 'test_facebk',
+      user: 'uche',
       password: 'uche',
       port: 5433
     },
@@ -16,6 +35,9 @@ module.exports = {
     },
     migrations: {
       tableName: 'knex_migrations'
+    },
+    seeds: {
+      directory: path.join(__dirname, '../db/seeds')
     }
   },
 
@@ -34,6 +56,9 @@ module.exports = {
     },
     migrations: {
       tableName: 'knex_migrations'
+    },
+    seeds: {
+      directory: path.join(__dirname, '../db/seeds')
     }
   },
 
