@@ -102,9 +102,6 @@ module.exports = function (passport) {
         let query = jwt_payload.email ? {email: jwt_payload.email} : {id: jwt_payload.uid};
         let user = (await User.find(query))[0];
         if (user.data) {
-            if (user.data.status === "suspended") {
-                return done(null, false, {"message": "account suspended"});
-            }
             done(null, user);
         } else {
             done(null, false);

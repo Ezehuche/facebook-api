@@ -69,7 +69,7 @@ describe('user', () => {
     });
 
     //decribe('POST /users/register', () => {
-        it('should return a user', async () => {
+        it('should return a user', async (done) => {
           
             await request(app).post('/api/v1/users/register')
             .send({"name": "admin","email": "admin@example.com", "password": "1234"})
@@ -78,14 +78,10 @@ describe('user', () => {
         })
     //})
 
-    it('should return 400 error ', async () => {
+    /*test('should return 400 error ', async (done) => {
         const {body: errorResult} = await request(app).post(`/api/v1/users/register`)
         .send({"name": "admin","email": "admin@example.com", "password": "1234"})
         .expect(400)
-      
-        expect(errorResult).toStrictEqual({
-            error: 'This user alraedy exist',
-        })
-    })
+    })*/
   });
 

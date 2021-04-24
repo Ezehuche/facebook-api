@@ -22,12 +22,6 @@ var knex = require('knex')({
     connection: config
 });
 
-
-let baseHeaders = {
-    "Accept": "application/json",
-    "Content-Type": "application/json"
-};
-
 let stripDates = function(body){
     let newObj = body;
     for(var i in body){
@@ -58,7 +52,10 @@ let responseHandler = function(assert, expected, test, callback){
 }
 
 describe('post', () => {
-    beforeAll(async () => {
+    let token = null;
+    let baseHeaders = null;
+    beforeAll(async (done) => {
+      //jest.setTimeout(30000)
       await knex.migrate.latest();
       await knex.seed.run();
       request(app).post("/api/v1/auth/token")
@@ -71,7 +68,7 @@ describe('post', () => {
                     "Content-Type": "application/json",
                     "Authorization": "JWT " + token
                 };
-
+                return done();
             })
     });
     afterAll(() => {
@@ -80,22 +77,28 @@ describe('post', () => {
         .then(() => knex.destroy());
     });
 
-    it('should publish a post', async () => {
-
+    it('should publish a post', async (done) => {
         await request(app).post('/api/v1/posts/create')
+            .set(baseHeaders)
             .send({ "post": "Lorem ipsum dolor sit amet, consectetur adipiscing elit" })
             .expect(200)
             .expect('Content-Type', /json/)
     })
 
-    it('should return 400 error ', async () => {
-        const {body: errorResult} = await request(app).post(`/api/v1/posts/create`)
-        .send({ "post": "Lorem ipsum dolor sit amet, consectetur adipiscing elit"})
-        .expect(400)
-      
-        expect(errorResult).toStrictEqual({
-            error: 'This user alraedy exist',
-        })
+    it('should get a post', async (done) => {
+        let id = 1;
+        await request(app).get(`/api/v1/posts/${id}`)
+            .expect(200)
+            .expect('Content-Type', /json/)
+    })
+
+    it('should edit a post', async (done) => {
+        let id = 1;
+        await request(app).put(`/api/v1/posts/${id}`)
+            .set(baseHeaders)
+            .send({ "post": "Lorem ipsum dolor sit amet, consectetur adipiscing elit" })
+            .expect(200)
+            .expect('Content-Type', /json/)
     })
   });
 

@@ -10,7 +10,7 @@ module.exports = function (router) {
     router.post('/users/register', function (req, res, next) {
         User.findAll("email", req.body.email, (user) => {
             if (user && user.length > 0) {
-                return res.status(400).json({ error: "This user alraedy exist" });
+                return res.json({ error: "This user alraedy exist" });
             }
         });
         if (req.body.password) {
@@ -18,13 +18,13 @@ module.exports = function (router) {
             let mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
             
             if (!req.body.email.match(mailFormat)) {
-                res.status(400).json({ error: 'Invalid email format' });
+                res.json({ error: 'Invalid email format' });
             } else {
                 let newUser = new User(req.body);
                 newUser.set('password', password);
                 newUser.createUser(async function (err, result) {
                     if (err) {
-                        res.status(404).json({ message: 'issue registering user' });
+                        res.json({ message: 'issue registering user' });
                     } else {
                         res.status(200).json(result);
                         await notification(result.data);

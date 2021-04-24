@@ -5,6 +5,7 @@ let mkdirp = require("mkdirp");
 let path = require("path");
 let validate = require("../middleware/validate");
 let PostLike = require("../models/post-like");
+let auth = require('../middleware/auth');
 
 let systemFilePath = "uploads/uploaded-images";
 
@@ -22,20 +23,22 @@ let systemStorage = multer.diskStorage({
 
 module.exports = function (router) {
 
-    router.post('/posts/create', function (req, res, next) {
+    router.post('/posts/create', auth(), function (req, res, next) {
         let newPost = new Post(req.body);
+        newPost.set("user_id", req.user.data.id);
         newPost.set("published", true);
         newPost.createPost(function (err, result) {
             if (err) {
-                return res.status(403).json({error: err});
+                return res.json({error: 'Issue creating facebook post'});
             } else {
+                console.log(result)
                 return res.status(200).json(result);
                 //next();
             }
         });
     })
 
-    router.post('/posts/file/:id(\\d+)', validate(Post), multer({storage: systemStorage }).array('image', 10), function (req, res, next) {
+    router.post('/posts/file/:id(\\d+)', auth(), validate(Post), multer({storage: systemStorage }).array('image', 10), function (req, res, next) {
         let post = res.locals.valid_object;
         if (req.files && req.files.length > 0) {
             let filesToInsert = req.files.map(function (file) {
@@ -55,27 +58,27 @@ module.exports = function (router) {
                
     })
 
-    router.get("/posts/:id(\\d+)", validate(Post), function (req, res, next) {
+    router.get("/posts/:id(\\d+)", auth(), validate(Post), function (req, res, next) {
         let post = res.locals.valid_object;
         post.attachReferences(updatedParent => {
             res.status(200).json(updatedParent);
         });
     });
 
-    router.put("/posts/:id(\\d+)", validate(Post), async function (req, res, next) {
+    router.put("/posts/:id(\\d+)", auth(), validate(Post), async function (req, res, next) {
         let post = res.locals.valid_object;
         req.body.id = req.params.id;
         Object.assign(post.data, req.body);
         console.log("updating the post");
         let updatepost = await post.update();
         let out = {
-            message: 'User is successfully updated',
+            message: 'Post is successfully updated',
             results: updatepost
         }
-        res.json(out);
+        res.status(200).json(out);
     });
 
-    router.delete(`/posts/:id(\\d+)`, validate(Post), async function (req, res, next) {
+    router.delete(`/posts/:id(\\d+)`, auth(), validate(Post), async function (req, res, next) {
         let post = res.locals.valid_object;
         post = await post.attachReferences();
         post.delete(function (err, result) {
@@ -89,19 +92,22 @@ module.exports = function (router) {
         })
     });
 
-    router.post("/posts/like/:id(\\d+)", function (req, res, next) {
+    router.post("/posts/like/:id(\\d+)", auth(), function (req, res, next) {
         let post_id = req.params.id;
-        let newPostLike = new PostLike({'post_id': post_id});
-        newPostLike.createPost(function (err, result) {
+        let newPostLike = new PostLike({
+            'post_id': post_id,
+            'user_id': req.user.data.id
+        });
+        newPostLike.likePost(function (err, result) {
             if (err) {
                 return res.status(403).json({error: err});
             } else {
-                res.json({message: 'post Likes'});
+                res.json({message: 'post Liked'});
             }
         })
     });
 
-    router.post("/posts/undolike/:id(\\d+)", function (req, res, next) {
+    router.post("/posts/undolike/:id(\\d+)", auth(), function (req, res, next) {
         let post_id = req.params.id;
         let postLike = new PostLike({'post_id': post_id});
         postLike.undoLike(function (err, result) {

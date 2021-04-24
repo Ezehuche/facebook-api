@@ -1,3 +1,4 @@
+const Post = require("./post");
 
 let PostLike = require("./base/entity")("comments");
 
@@ -20,8 +21,10 @@ PostLike.prototype.likePost = new Proxy(likePost, {
     }
 });
 
-PostLike.prototype.undoLike = function (callback) {
+PostLike.prototype.undoLike = async function (callback) {
     let self = this;
+    let likedPost = (await PostLike.find({'post_id': self.data.post_id}))[0];
+    self.data.id = likedPost.data.id;
     new Promise(function (resolve, reject) {
         self.delete(function (err, deleted_user) {
             if (err) {

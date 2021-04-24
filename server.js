@@ -145,6 +145,9 @@ app.use(function (err, req, res, next) {
 
 const port = process.env.PORT || 5000;
 
-app.listen(port, () => console.log(`Server up and running on port ${port} !`));
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => console.log(`Server up and running on port ${port} !`));
+}
+
 
 module.exports = app
