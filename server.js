@@ -14,6 +14,7 @@ const swaggerUi = require('swagger-ui-express');
 
 require('dotenv').config({path: __dirname + '/.env'})
 
+require('./config/passport.js')(passport);
 const app = express();
 app.use(helmet({
   frameguard: false
@@ -83,8 +84,6 @@ var api = express.Router();
 app.use("/api/v1", api);
 
 require('./api/users')(api);
-require('./api/posts');
-require('./api/comments');
 
 //force all requests to api route to look for token, if token is present in header the user will be logged in with that token
 api.use(function (req, res, next) {
@@ -105,6 +104,9 @@ api.use(function (req, res, next) {
         });
     })(req, res, next);
 });
+
+require('./api/posts')(api);
+require('./api/comments')(api);
 
 api.use(function (req, res, next) {
   if (res.locals.json) {

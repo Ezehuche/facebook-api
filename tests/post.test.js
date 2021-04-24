@@ -57,10 +57,22 @@ let responseHandler = function(assert, expected, test, callback){
 
 }
 
-describe('user', () => {
-    beforeAll(() => {
-      return knex.migrate.latest();
-      // you can here also seed your tables, if you have any seeding files
+describe('post', () => {
+    beforeAll(async () => {
+      await knex.migrate.latest();
+      await knex.seed.run();
+      request(app).post("/api/v1/auth/token")
+            .send({"email": "test@example.com", "password": "1234"})
+            .expect('Content-Type', /json/)
+            .end(function (err, res) {
+                token = res.body.token;
+                baseHeaders = {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "Authorization": "JWT " + token
+                };
+
+            })
     });
     afterAll(() => {
       return knex.migrate
@@ -68,19 +80,17 @@ describe('user', () => {
         .then(() => knex.destroy());
     });
 
-    //decribe('POST /users/register', () => {
-        it('should return a user', async () => {
-          
-            await request(app).post('/api/v1/users/register')
-            .send({"name": "admin","email": "admin@example.com", "password": "1234"})
+    it('should publish a post', async () => {
+
+        await request(app).post('/api/v1/posts/create')
+            .send({ "post": "Lorem ipsum dolor sit amet, consectetur adipiscing elit" })
             .expect(200)
             .expect('Content-Type', /json/)
-        })
-    //})
+    })
 
     it('should return 400 error ', async () => {
-        const {body: errorResult} = await request(app).post(`/api/v1/users/register`)
-        .send({"name": "admin","email": "admin@example.com", "password": "1234"})
+        const {body: errorResult} = await request(app).post(`/api/v1/posts/create`)
+        .send({ "post": "Lorem ipsum dolor sit amet, consectetur adipiscing elit"})
         .expect(400)
       
         expect(errorResult).toStrictEqual({
