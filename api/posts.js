@@ -80,14 +80,14 @@ module.exports = function (router) {
 
     router.delete(`/posts/:id(\\d+)`, auth(), validate(Post), async function (req, res, next) {
         let post = res.locals.valid_object;
-        post = await post.attachReferences();
-        post.delete(function (err, result) {
+        //post = await post.attachReferences();
+        post.deletePost(function (err, result) {
             if(err){
                 console.error("Server error deleting post: " + err);
                 res.status(500).send({ error: "Error deleting" })
             }
             else {
-                res.json = {message: `Post with id ${req.params.id} deleted`};   
+                res.json({message: `Post with id ${req.params.id} deleted`});   
             }
         })
     });

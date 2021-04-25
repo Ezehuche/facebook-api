@@ -17,7 +17,7 @@ File.findFile = function(filePath, id, callback){
         });
 };
 
-File.prototype.delete = function(callback){
+File.prototype.deleteFile = function(callback){
     let id = this.get('id');
     let filePath = this.get("path");
     fs.unlink(filePath, err => {

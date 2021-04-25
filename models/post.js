@@ -5,6 +5,8 @@ let references = [
     {"model": User, "referenceField": "user_id", "direction": "to", "readOnly": true}
 ];
 let Post = require('./base/entity')("posts", references);
+let Comment = require('./comment');
+let PostLike = require('./post-like');
 
 let createPost = function (options, callback) {
     let self = this;
@@ -38,5 +40,77 @@ Post.prototype.publish = async function () {
     self.data.published = true;
     return await self.update();
 };
+
+Post.prototype.deletePost = function (callback) {
+    let self = this;
+    new Promise(function (resolve, reject) {
+        File.findAll("post_id", self.data.id, function(files) {
+            if(files.length && files.length > 0){
+                files.map(function (file){
+                    file.deleteFile(function (err, result) {
+                        if(!err) {
+                            return resolve(result);
+                        } else {
+                            return reject(err);
+                        }
+                    });
+                });
+            }else{
+                return resolve(self);
+            }
+        })
+    }).then(function(){
+        return new Promise(function (resolve, reject) {
+            Comment.findAll("post_id", self.data.id, function(comments) {
+                if(comments.length && comments.length > 0){
+                    comments.map(function (comment){
+                        comment.delete(function (err, result) {
+                            if(!err) {
+                                return resolve(result);
+                            } else {
+                                return reject(err);
+                            }
+                        });
+                    });
+                }else{
+                    return resolve(self);
+                }
+                
+            })
+        });
+    }).then(function(){
+        return new Promise(function (resolve, reject) {
+            PostLike.findAll("post_id", self.data.id, function(likes) {
+                if(likes.length && likes.length > 0){
+                    likes.map(function (like){
+                        like.delete(function (err, result) {
+                            if(!err) {
+                                return resolve(result);
+                            } else {
+                                return reject(err);
+                            }
+                        });
+                    });
+                }else{
+                    return resolve(self);
+                }
+            })
+        });
+
+    }).then(function (){
+        return new Promise(function (resolve, reject) {
+            self.delete(function (err, deleted_post) {
+                if (err) {
+                    return reject('Post cannot be deleted!');
+                }
+                return resolve(`Post ${self.data.id} has been deleted from database!`);
+            });
+        });
+    }).then(function () {
+        callback(null, `Post ID: ${self.data.id} has been removed.`);
+    }).catch(function (err) {
+        callback(err, null);
+    });
+}
 
 module.exports = Post;
