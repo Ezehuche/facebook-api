@@ -79,22 +79,6 @@ var whereFilter = require('knex-filter-loopback').whereFilter;
 
     };
 
-    Entity.createPromise = function (entityData) {
-        let self = this
-        return Entity.database(Entity.table).columnInfo()
-            .then(function (info) {
-                return _.pick(entityData, _.keys(info));
-            })
-            .then(function (data) {
-                return Entity.database(Entity.table).returning("*").insert(data)
-            })
-            .then(function (result) {
-                return result[0];
-            })
-            .catch(function (err) {
-                throw err
-            });
-    };
     Entity.prototype.create = function (callback) {
         let self = this;
         Entity.database(Entity.table).columnInfo()
@@ -167,68 +151,6 @@ var whereFilter = require('knex-filter-loopback').whereFilter;
         }
     }
 
-
-    Entity.prototype.createReferences = function (referenceData, reference, callback) {
-        let self = this;
-        if (reference.readOnly) {
-            
-            callback(self);
-        }
-        else {
-            referenceData.forEach(newChild => (newChild[reference.referenceField] = this.get(primaryKey)));
-            //
-            //console.log(referenceData);
-            reference.model.batchCreate(referenceData, function (response) {
-                if (reference.direction == "to") {
-                    self.set(reference.referenceField, response[0][reference.model.primaryKey]);
-                    self.update(function (err, updatedEntity) {
-                        self.data.references[reference.model.table] = response;
-                        callback(self);
-                    })
-                }
-                else {
-                    self.data.references[reference.model.table] = response;
-                    callback(self);
-                }
-            })
-        }
-    }
-
-    //todo - combine stuff into a single query
-    //todo - possibly dispatch events
-    Entity.prototype.updateReferences = async function (referenceData, reference, isTransaction=false) {
-        let self = this;
-        if (reference.readOnly) {
-            
-            this;
-        }
-        else {
-            console.error(referenceData, reference);
-            let ids = referenceData.reduce((acc, refInstance) => acc.concat(refInstance.id || []), []);
-            referenceData.forEach(newChild => (newChild[reference.referenceField] = this.get(primaryKey)));
-
-            let references = await this.getRelated(reference.model.table);
-            let removedReferences = await reference.model.batchDelete({
-                not: {id: {"in": ids}},
-                [reference.referenceField]: self.get(primaryKey)
-            });
-            
-            let upsertedReferences = await reference.model.batchUpdate(referenceData, true, isTransaction);
-
-            //change "to" reference if it's different
-            if(reference.direction === "to" && upsertedReferences[0][reference.model.primaryKey] !== self.get(reference.referenceField)){
-                self.set(reference.referenceField, upsertedReferences[0][reference.model.primaryKey]);
-                await self.update();
-            }
-
-            return upsertedReferences;
-
-
-        }
-    };
-
-    //TODO: think about no result case, not too happy how handling it now.
-
     //Also want to think about having generic find method all models would use
     Entity.findAll = function (key = true, value = true, callback) {
         Entity.database(Entity.table).where(key, value)
@@ -259,55 +181,11 @@ var whereFilter = require('knex-filter-loopback').whereFilter;
         }
     };
 
-    Entity.findFilter = function (filter = {}, callback) {
-        Entity.database(Entity.table).where(whereFilter(filter))
-            .then(function (result) {
-                if (!result) {
-                    result = [];
-                }
-                let entities = result.map(e => new Entity(e));
-                callback(entities);
-            })
-            .catch(function (err) {
-                console.error(err);
-            });
-    };
-
-    Entity.getSumOfAmount = async function (column, key, value) {
-        let query = await Entity.database(Entity.table).sum(column);
-        if (key) {
-            query.where(key, value)
-        }
-        await query.sum(column)
-            .then(function (result) {
-                return (result[0].sum);
-                //callback(result[0].sum);
-            })
-            .catch(function (err) {
-                console.error(err);
-                return [];
-            });
-    };
-
     //Find on relative function will call the findAll function by default. Allowing overrides at a model layer.
     Entity.findOnRelative = function (key = true, value = true, callback) {
         Entity.findAll(key, value, function (result) {
             callback(result);
         })
-    };
-
-    Entity.findAllByOrder = function (key, value, orderBy, sortMethod, callback) {
-        Entity.database(Entity.table).orderBy(orderBy, sortMethod).where(key, value)
-            .then(function (result) {
-                if (!result) {
-                    result = [];
-                }
-                let entities = result.map(e => new Entity(e));
-                callback(entities);
-            })
-            .catch(function (err) {
-                console.error(err);
-            });
     };
 
     let findOne = function (key, value, callback) {
@@ -330,50 +208,6 @@ var whereFilter = require('knex-filter-loopback').whereFilter;
                     result = [];
                 }
                 callback(new Entity(result[0]));
-            })
-            .catch(function (err) {
-                console.error(err);
-            });
-    };
-
-    let getSchema = function (includeTo, includeFrom, callback) {
-        //get column info for this entity
-        Entity.database(Entity.table).columnInfo()
-            .then(function (info) {
-                let schema = info;
-                schema.references = {};
-                Entity.references.reduce(function (promise, relationship) {
-                    if ((relationship.direction == "to" && !includeTo) || (relationship.direction == "from" && !includeFrom)) {
-                        return promise;
-                    }
-
-                    //reduce by returning same promise with .then for each relationship where the schema has the relationship added
-                    return promise.then(function () {
-                        return Entity.database(relationship.model.table).columnInfo().then(function (relInfo) {
-                            schema.references[relationship.model.table] = relInfo;
-                        })
-                    })
-                }, Promise.resolve()).then(function (result) {
-                    callback(schema);
-                })
-            });
-
-    };
-
-    //gets results that contain the value
-
-    Entity.search = function (key, value, callback) {
-        let query = "LOWER(" + key + ") LIKE '%' || LOWER(?) || '%' "
-        if (value % 1 === 0) {
-            query = key + " = ?";
-        }
-        Entity.database(Entity.table).whereRaw(query, value)
-            .then(function (result) {
-                if (!result) {
-                    result = [];
-                }
-                let entities = result.map(e => new Entity(e));
-                callback(entities);
             })
             .catch(function (err) {
                 console.error(err);
@@ -485,7 +319,6 @@ var whereFilter = require('knex-filter-loopback').whereFilter;
     Entity.prototype.attachReferences = promiseProxy(attachReferences);
     Entity.prototype.getRelated = promiseProxy(getRelated);
     Entity.batchCreate = promiseProxy(batchCreate);
-    Entity.getSchema = promiseProxy(getSchema);
 
 
     return Entity;

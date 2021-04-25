@@ -22,7 +22,7 @@ var knex = require('knex')({
     connection: config
 });
 
-describe('post', () => {
+describe('comments', () => {
     let token = null;
     let baseHeaders = null;
     beforeAll(async (done) => {
@@ -48,26 +48,11 @@ describe('post', () => {
         .then(() => knex.destroy());
     });
 
-    it('should publish a post', async (done) => {
-        await request(app).post('/api/v1/posts/create')
+    it('should comment on a post', async (done) => {
+        let postId = 1;
+        await request(app).post(`/api/v1/comment/${postId}`)
             .set(baseHeaders)
-            .send({ "post": "Lorem ipsum dolor sit amet, consectetur adipiscing elit" })
-            .expect(200)
-            .expect('Content-Type', /json/)
-    })
-
-    it('should get a post', async (done) => {
-        let id = 1;
-        await request(app).get(`/api/v1/posts/${id}`)
-            .expect(200)
-            .expect('Content-Type', /json/)
-    })
-
-    it('should edit a post', async (done) => {
-        let id = 1;
-        await request(app).put(`/api/v1/posts/${id}`)
-            .set(baseHeaders)
-            .send({ "post": "Lorem ipsum dolor sit amet, consectetur adipiscing elit" })
+            .send({ "comment": "Nice Post" })
             .expect(200)
             .expect('Content-Type', /json/)
     })

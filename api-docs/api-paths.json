@@ -222,5 +222,140 @@
                 }
             }
         }
+    },
+    "/comment/{post_id}": {
+        "post": {
+            "summary": "Reply to a post",
+            "tags": [
+                "comments"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "operationId": "reply_a_post",
+            "security": [
+                {
+                    "internalApiKey": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "comment",
+                    "in": "body",
+                    "description": "reply a post",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/comments"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "An array of Comments",
+                    "schema": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/comment"
+                        }
+                    }
+                },
+                "default": {
+                    "description": "Unexpected error",
+                    "schema": {
+                        "$ref": "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
+    "/posts/like/{post_id}": {
+        "post": {
+            "summary": "Like a post",
+            "tags": [
+                "postLikes"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "operationId": "like_a_post",
+            "security": [
+                {
+                    "internalApiKey": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "postLike",
+                    "in": "body",
+                    "description": "like a post",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/postlike"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "A Post Like",
+                    "schema": {
+                        "type": "json",
+                        "items": {
+                            "$ref": "#/definitions/postlike"
+                        }
+                    }
+                },
+                "default": {
+                    "description": "Unexpected error",
+                    "schema": {
+                        "$ref": "#/definitions/Error"
+                    }
+                }
+            }
+        }
+    },
+    "/posts/undolike/{post_id}": {
+        "post": {
+            "summary": "Undo post like",
+            "tags": [
+                "undopostlike"
+            ],
+            "produces": [
+                "application/json"
+            ],
+            "operationId": "undo_post_like",
+            "security": [
+                {
+                    "internalApiKey": []
+                }
+            ],
+            "parameters": [
+                {
+                    "name": "undoPostlike",
+                    "in": "body",
+                    "description": "undo post like",
+                    "required": true,
+                    "schema": {
+                        "$ref": "#/definitions/undopostlike"
+                    }
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "",
+                    "schema": {
+                        "type": "json",
+                        "items": {
+                            "$ref": "#/definitions/undopostlike"
+                        }
+                    }
+                },
+                "default": {
+                    "description": "Unexpected error",
+                    "schema": {
+                        "$ref": "#/definitions/Error"
+                    }
+                }
+            }
+        }
     }
 }

@@ -159,5 +159,103 @@
                 }
             }
         }
+    },
+    "comments": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer",
+                "required": true,
+                "description": "FILL ME OUT!!!!"
+            },
+            "user_id": {
+                "type": "integer",
+                "required": false,
+                "description": "FILL ME OUT!!!!"
+            },
+            "post_id": {
+                "type": "integer",
+                "required": false,
+                "description": "FILL ME OUT!!!!"
+            },
+            "comment": {
+                "type": "string",
+                "maxLength": 255,
+                "required": false,
+                "description": "FILL ME OUT!!!!"
+            },
+            "created": {
+                "type": "timestamp with time zone",
+                "required": true,
+                "description": "FILL ME OUT!!!!"
+            },
+            "references": {
+                "type": "object",
+                "properties": {
+                    "posts": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "$ref": "#/definitions/posts"
+                            }
+                        ]
+                    },
+                    "users": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "$ref": "#/definitions/users"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    },
+    "post_like": {
+        "type": "object",
+        "properties": {
+            "id": {
+                "type": "integer",
+                "required": true,
+                "description": "FILL ME OUT!!!!"
+            },
+            "user_id": {
+                "type": "integer",
+                "required": false,
+                "description": "FILL ME OUT!!!!"
+            },
+            "post_id": {
+                "type": "integer",
+                "required": false,
+                "description": "FILL ME OUT!!!!"
+            },
+            "created": {
+                "type": "timestamp with time zone",
+                "required": true,
+                "description": "FILL ME OUT!!!!"
+            },
+            "references": {
+                "type": "object",
+                "properties": {
+                    "posts": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "$ref": "#/definitions/posts"
+                            }
+                        ]
+                    },
+                    "users": {
+                        "type": "array",
+                        "items": [
+                            {
+                                "$ref": "#/definitions/users"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
     }
 }
