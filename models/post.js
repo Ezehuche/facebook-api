@@ -1,7 +1,7 @@
 let File = require('./file');
 let User = require('./user');
 let references = [
-    {"model": File, "referenceField": "file_id", "direction": "to", "readOnly": true},
+    {"model": File, "referenceField": "post_id", "direction": "from", "readOnly": true},
     {"model": User, "referenceField": "user_id", "direction": "to", "readOnly": true}
 ];
 let Post = require('./base/entity')("posts", references);

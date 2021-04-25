@@ -1,0 +1,154 @@
+{
+    "users": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "maxLength": 255,
+            "type": "string"
+          },
+          "email": {
+            "maxLength": 255,
+            "type": "string"
+          },
+          "password": {
+            "format": "password",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "files": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "user_id": {
+            "type": "integer"
+          },
+          "post_id": {
+            "type": "integer"
+          },
+          "path": {
+            "maxLength": 255,
+            "type": "string"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "name": {
+            "maxLength": 255,
+            "type": "string"
+          },
+          "mimetype": {
+            "maxLength": 255,
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "references": {
+            "type": "object",
+            "properties": {
+              "files": {
+                "type": "array",
+                "items": [
+                  {
+                    "$ref": "#/definitions/files"
+                  }
+                ]
+              },
+              "users": {
+                "type": "array",
+                "items": [
+                  {
+                    "$ref": "#/definitions/users"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "posts": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "user_id": {
+            "type": "integer"
+          },
+          "post": {
+            "type": "string"
+          },
+          "published": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "comments": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "user_id": {
+            "type": "integer"
+          },
+          "post_id": {
+            "type": "integer"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      },
+      "post_like": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "user_id": {
+            "type": "integer"
+          },
+          "post_id": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        }
+      }
+}
