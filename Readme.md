@@ -16,6 +16,7 @@ git clone https://github.com/Ezehuche/facebook-api
 run npm install 
 Rename .env.example to .env and make necessary changes
 the run npm start
+the server will be available at http://localhost:5000
 
 # To run tests
 npm run test
