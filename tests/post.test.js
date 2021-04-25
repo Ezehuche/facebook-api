@@ -56,20 +56,5 @@ describe('post', () => {
             .expect('Content-Type', /json/)
     })
 
-    it('should get a post', async (done) => {
-        let id = 1;
-        await request(app).get(`/api/v1/posts/${id}`)
-            .expect(200)
-            .expect('Content-Type', /json/)
-    })
-
-    it('should edit a post', async (done) => {
-        let id = 1;
-        await request(app).put(`/api/v1/posts/${id}`)
-            .set(baseHeaders)
-            .send({ "post": "Lorem ipsum dolor sit amet, consectetur adipiscing elit" })
-            .expect(200)
-            .expect('Content-Type', /json/)
-    })
   });
 
