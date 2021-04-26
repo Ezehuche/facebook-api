@@ -9,10 +9,10 @@ async function createTestDatabase() {
     client: 'pg',
     connection: {
       host: 'localhost',
-      database: "postgres",
-      user: 'uche',
-      password: 'uche',
-      port: 5433
+      database: 'postgres',
+      user: 'test',
+      password: 'test',
+      port: 5432
     },
   })
 
@@ -33,9 +33,9 @@ async function seedTestDatabase() {
     connection: {
       host: 'localhost',
       database: 'test_facebk',
-      user: 'uche',
-      password: 'uche',
-      port: 5433
+      user: 'test',
+      password: 'test',
+      port: 5432
     },
   })
 

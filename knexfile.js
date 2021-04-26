@@ -25,28 +25,7 @@ module.exports = {
     client: 'postgresql',
     connection: {
       database: 'test_facebk',
-      user: 'uche',
-      password: 'uche',
-      port: 5433
-    },
-    pool: {
-      min: 2,
-      max: 10
-    },
-    migrations: {
-      tableName: 'knex_migrations'
-    },
-    seeds: {
-      directory: path.join(__dirname, '../db/seeds')
-    }
-  },
-
-  production: {
-    client: 'postgresql',
-    connection: {
-      host: 'localhost',
       user: 'test',
-      database: 'test',
       password: 'test',
       port: 5432
     },
@@ -56,9 +35,23 @@ module.exports = {
     },
     migrations: {
       tableName: 'knex_migrations'
+    }
+  },
+
+  production: {
+    client: 'postgresql',
+    connection: {
+      database: process.env.POSTGRES_DB_NAME,
+      user:     process.env.POSTGRES_DB_USER,
+      password: process.env.POSTGRES_DB_PASSWORD,
+      port: process.env.POSTGRES_DB_PORT
     },
-    seeds: {
-      directory: path.join(__dirname, '../db/seeds')
+    pool: {
+      min: 2,
+      max: 10
+    },
+    migrations: {
+      tableName: 'knex_migrations'
     }
   },
 
