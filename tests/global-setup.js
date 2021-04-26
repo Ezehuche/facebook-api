@@ -1,4 +1,6 @@
 let Knex = require('knex');
+const config = require("../knexfile");
+let connection = config.test.connection;
 
 const database = 'test_facebk';
 require('dotenv').config({path: __dirname + '/.env'})
@@ -7,13 +9,7 @@ require('dotenv').config({path: __dirname + '/.env'})
 async function createTestDatabase() {
   const knex = Knex({
     client: 'pg',
-    connection: {
-      host: 'localhost',
-      database: 'postgres',
-      user: 'test',
-      password: 'test',
-      port: 5432
-    },
+    connection: connection,
   })
 
   try {
@@ -30,13 +26,7 @@ async function createTestDatabase() {
 async function seedTestDatabase() {
   const knex = Knex({
     client: 'pg',
-    connection: {
-      host: 'localhost',
-      database: 'test_facebk',
-      user: 'test',
-      password: 'test',
-      port: 5432
-    },
+    connection: connection,
   })
 
   try {

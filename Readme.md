@@ -18,13 +18,16 @@ Rename .env.example to .env and make necessary changes
 the run npm start
 the server will be available at http://localhost:5000
 
-# To run tests
-npm run test
-
 go to http://localhost:5000/swagger.json to view the api documentation
+
+# To run tests
+Open knexfile.js and make changes to test database connection details
+npm run test
 ```
 ### JWT Authorization
+```
 JSON Web token, Authorization header should look like 'JWT TokenFromAuthApi', for example 'JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjEsImlhdCI6MTU' Auth api can be found at /auth/token
+```
 
 ### Author
 Ezeokeke Uche 
